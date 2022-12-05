@@ -1,0 +1,174 @@
+section--DESCRIPTION:
+        ================================================
+Package:
+        o0253020427002346111545012426110200347615476
+Type:
+        Package
+Title:
+        Difference between continuous piecewise linear
+        multifunctions (CPLFF).
+Version:
+        2022.12-1
+Date:
+        2022-12-01
+Author:
+        D. Michael Parrish [aut]
+Maintainer:
+        Neat O <neatoverse@yahoo.com>
+Description:
+        Given representations of two continuous piecewise
+        linear multifunctions, return a representation
+        of the difference between them.
+            This file is
+        o0253020427002346111545012426110200347615476/
+        DESCRIPTION
+License:
+        AGPL-3
+Encoding:
+        UTF-8
+section--INSTALL:
+        ================================================
+        To install, copy this package, including its
+        containing subdirectory, to a known directory.
+        The subdirectory should be named
+        o0253020427002346111545012426110200347615476
+        to be consistent with the design of this package.
+section---DEVELOPER-NOTES:
+        ================================================
+        This package is a modified copy of
+        o0232344245420300105067234207766676667673057
+section---HELP:
+        ================================================
+help---Usage:
+        ------------------------------------------------
+        # Replace "prefix" with the pathname to the
+        # installation subdirectory.
+        pathname <- paste0 ( "prefix" ,
+            "/o0253020427002346111545012426110200347615476" )
+        diff.cplff <- source ( paste0 ( pathname ,
+            "/diff.cplff.R" ) ) [[ 1 ]] ( pathname )
+        diff.cplf ( X1 , X2 , interpolations )
+help---Arguments:
+        ------------------------------------------------
+        X1, X2:
+            Each is a data frame representing a
+            continuous piecewise linear multifunction
+            (CPLFF); see details.
+        interpolations:
+            a logical value---either `TRUE` or `FALSE`---
+            that tells whether to include the interpolated
+            values in the return.
+help---Value:
+        ------------------------------------------------
+        The diff.cplf function returns another data
+        frame representing the CPLFF that is the
+        difference between `X1` and `X2`. If
+        `interpolations` is `TRUE`, the corresponding
+        function-values of the `X1` and `X2` CPLFF's are
+        included.
+            The first column represents the "x"-value at
+        which the differences are computed.
+help---Details:
+        ------------------------------------------------
+        The representation of a CPLFF that `diff.cplff`
+        accepts is a multipe-column data frame where all
+        columns must be `numeric` and the first column---
+        representing the "x" values of the knots---must
+        be monotonically increasing.
+            Missing values (`NA`) may arrise from the
+        internal `neighbors` function. This function
+        looks "left" and "right" for "x" values in the
+        given CPLFF. If searching near a location that
+        is already to the right of available points,
+        there will be no nearby point to the right; the
+        corresponding interpolated value will be `NA`.
+help---See Also:
+        ------------------------------------------------
+        Wikimedia Foundation. "Piecewise linear function"
+        https://en.wikipedia.org/wiki/Piecewise_linear_function
+help---Examples:
+                #-----------------------------------------------
+                # Examples 1 and 2 use the same setup.
+                # Replace "prefix" with the pathname to the
+                # installation subdirectory.
+                pathname <- paste0 ( "prefix" , "/o02530204" ,
+                        "27002346111545012426110200347615476" )
+                diff.cplff <- source ( paste0 ( pathname ,
+                    "/diff.cplff.R" ) ) [[ 1 ]] ( pathname )
+                image. <- function ( x , y ) image (
+                    x = x ,
+                    y = y ,
+                    z = matrix ( 1 ) ,
+                    asp = 1 ,
+                    col = NA,
+                    xlab = "",
+                    ylab = "")
+                linesv <- function ( x ) segments (
+                    x0 = x ,
+                    y0 = par ( "usr" ) [[ 3 ]] ,
+                    y1 = par ( "usr" ) [[ 4 ]] ,
+                    col = "lightgrey" )
+                xaxis <- function () segments (
+                    y0 = 0 ,
+                    x0 = par ( "usr" ) [[ 1 ]] ,
+                    x1 = par ( "usr" ) [[ 2 ]] ,
+                    col = "lightgrey" ,
+                    lwd = 3 )
+                range. <- function ( X , Y ) {
+                    xx <- unlist ( X [ -1 ] )
+                    yy <- unlist ( Y [ -1 ] )
+                    range ( c ( 0 , xx , yy , 
+                    max ( xx ) - min ( yy ) ,
+                    max ( yy ) - min ( xx ) ) ) }
+                COL <- list (
+                    A = paste0 ( "pink" , 1 : 4 ) ,
+                    B = paste0 ( "blue" , 1 : 4 ) ,
+                    D = paste0 ( "purple" , 1 : 4 ) )
+                PCH <- list (
+                    A = 3 ,
+                    B = 4 ,
+                    D = 1 )
+                lines. <- function ( ... , xpd = TRUE )
+                        lines ( ... , xpd = xpd )
+                points. <- function ( ... , xpd = TRUE )
+                        points ( ... , xpd = xpd )
+                draw <- function ( X ) {
+                    AX <- as.character ( substitute ( X ) )
+                    C <- COL [[ AX ]]
+                    for ( k in seq_along ( X ) [ -1 ] ) {
+                            i <- c ( 1 , k )
+                            lines.  ( X [ i ] , col = C [[ k ]] )
+                            points. ( X [ i ] , col = C [[ k ]] ,
+                                cex = 2 , pch = PCH [[ AX ]] ) } }
+                drawAll <- function ( A , B , D ) {
+                    DOMAIN <- range ( c ( A [[ 1 ]] , B [[ 1 ]] ) )
+                    RANGE  <- range. ( A , B )
+                    image. ( DOMAIN , RANGE )
+                    linesv ( D $ x )
+                    xaxis ()
+                    draw ( A )
+                    draw ( B )
+                    D <- D [ seq_along ( A ) ]
+                    draw ( D ) }
+                # - - - - - - - - - - - - - - - - - - - - - - -
+                # Example 1
+                x1 <- c ( 1 , 3 )
+                x2 <- c ( 2 , 4 )
+                A <- data.frame ( x1 = x1 , y1 = x1 )
+                B <- data.frame ( x2 = x2 , y2 = x2 )
+                D <- diff.cplff ( A , B , TRUE )
+                drawAll ( A , B , D )
+                # - - - - - - - - - - - - - - - - - - - - - - -
+                # Example 2
+                x1 <- sort ( runif ( 16 ) )
+                x2 <- sort ( runif ( 16 ) )
+                A <- data.frame (
+                    x2 ,
+                    y21 = 1 - ( x2 * x2 ) / 2 ,
+                    y22 = 1 - ( x2 * x2 ) / 2 + ( x2 * x2 * x2 * x2 ) / 24 )
+                B <- data.frame (
+                    x1 ,
+                    y11 = sqrt ( 1 - x1 * x1 ) ,
+                    y12 = cos ( x1 ) )
+                D <- diff.cplff ( A , B , TRUE )
+                drawAll ( A , B , D )
