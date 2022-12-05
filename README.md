@@ -1,2 +1,1 @@
-# diff-cplff--WORM
-Difference between continuous piecewise linear multifunctions
+[README](https://github.com/dmparrishphd/diff-cplff--CORW#readme).
